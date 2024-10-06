@@ -1,0 +1,107 @@
+/* Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f7f8fc;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #4CAF50;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+#chatbox {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+}
+
+.messages-box {
+    min-height: 200px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    overflow-y: auto;
+    transition: all 0.5s ease;
+}
+
+.message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+.bot-message {
+    justify-content: flex-start;
+}
+
+.message-text {
+    max-width: 75%;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+}
+
+.bot-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    display: inline-block;
+}
+
+.input-field {
+    width: 80%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.send-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.send-btn:hover {
+    background-color: #45a049;
+}
+
+input::placeholder {
+    color: #bbb;
+}
+
+.bot-typing {
+    font-style: italic;
+    color: #aaa;
+    padding-left: 10px;
+}
