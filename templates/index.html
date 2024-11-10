@@ -4,22 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Recommendation Chatbot</title>
-    <!-- Link to the CSS file -->
+    
+    <!-- Link to CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Use Google Fonts for a more stylish look -->
+    
+    <!-- Google Fonts for modern typography -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="A chatbot that recommends music based on your mood, artist, or genre. Get personalized song suggestions instantly!">
+    <meta name="keywords" content="music, chatbot, recommendations, mood, artist, genre, Spotify API">
+
+    <!-- Favicon for better branding -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
     <div class="container">
         <h1>🎶 Music Recommendation Chatbot 🎶</h1>
-        <div id="chatbox">
-            <div id="messages" class="messages-box"></div>
-            <input type="text" id="userInput" placeholder="Enter a genre, artist, or mood..." class="input-field" />
-            <button onclick="sendMessage()" class="send-btn">Get Recommendation</button>
+        
+        <!-- Chatbox area -->
+        <div id="chatbox" aria-label="Chatbox">
+            <div id="messages" class="messages-box" aria-live="polite" aria-relevant="additions"></div>
+            
+            <!-- Input field and button for user interaction -->
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Enter a genre, artist, or mood..." 
+                class="input-field" 
+                aria-label="Type your query here"
+            />
+            <button 
+                onclick="sendMessage()" 
+                class="send-btn" 
+                aria-label="Send your request">
+                Get Recommendation
+            </button>
         </div>
     </div>
 
-    <!-- Link to the JavaScript file -->
+    <!-- JavaScript file linked here -->
     <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
+
+
