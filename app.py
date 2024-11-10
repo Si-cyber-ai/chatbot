@@ -1,45 +1,19 @@
-'''from flask import Flask, jsonify, request, render_template
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-
-app = Flask(__name__)
-
-# Configure Spotify API credentials
-sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
-    client_id="5031e779b10a49ffbac2d7ae75075e01",
-    client_secret="5dc729c0a2314f78851e668b49f2d32d"
-))
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-@app.route('/get_recommendation', methods=['POST'])
-def get_recommendation():
-    data = request.json
-    query = data.get('query')
-    
-    # Fetch recommendations based on user query
-    result = sp.search(q=query, type='track', limit=1)
-    track = result['tracks']['items'][0]
-    track_name = track['name']
-    track_url = track['external_urls']['spotify']
-    
-    return jsonify({'song': track_name, 'url': track_url})
-
-if __name__ == '__main__':
-    app.run(debug=True)'''
 from flask import Flask, jsonify, request, render_template
 import random
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+import os
+from dotenv import load_dotenv  # Importing load_dotenv to load environment variables from .env file
 
 app = Flask(__name__)
 
-# Configure Spotify API credentials
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure Spotify API credentials using environment variables
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
-    client_id="5031e779b10a49ffbac2d7ae75075e01",                     
-    client_secret="5dc729c0a2314f78851e668b49f2d32d"
+    client_id=os.getenv("SPOTIPY_CLIENT_ID"),  # Updated to fetch from environment variables
+    client_secret=os.getenv("SPOTIPY_CLIENT_SECRET")  # Updated to fetch from environment variables
 ))
 
 # Sample recommendations based on moods
@@ -77,42 +51,37 @@ def home():
 @app.route('/get_recommendation', methods=['POST'])
 def get_recommendation():
     user_input = request.json.get('query', '').lower()
+    mood = get_mood_from_input(user_input)
     
-    # Check for specific song requests
-    if "recommend me" in user_input or "suggest a song" in user_input:
-        # Respond with a random song recommendation
-        additional_song = random.choice([
-            {"song": "Shape of You by Ed Sheeran", "url": "https://open.spotify.com/track/7qiZsI1Y7C7W0M0F1O9k2f"},
-            {"song": "Blinding Lights by The Weeknd", "url": "https://open.spotify.com/track/0VjIlz8d6xJgG8U1a8xJtC"},
-            {"song": "Levitating by Dua Lipa", "url": "https://open.spotify.com/track/6p2eyZnCpTeGZ6NSU2RfEx"},
-            {"song": "Don't Start Now by Dua Lipa", "url": "https://open.spotify.com/track/3DFe4rGoeU4LzJt2POw18j"}
-        ])
-        return jsonify({"additional_song": additional_song})
-
-    # Determine the mood based on user input
-    mood = None
-    if any(word in user_input for word in ["happy", "joy", "excited"]):
-        mood = "happy"
-    elif any(word in user_input for word in ["sad", "down", "blue"]):
-        mood = "sad"
-    elif any(word in user_input for word in ["relaxed", "calm", "chill"]):
-        mood = "relaxed"
-    elif any(word in user_input for word in ["energetic", "active", "hyped"]):
-        mood = "energetic"
-
-    if mood and mood in mood_recommendations:
+    if mood:
         recommendations = random.sample(mood_recommendations[mood], 3)  # Get 3 random recommendations
-        return jsonify(recommendations)
+        return jsonify({'recommendations': recommendations})
 
-    # Fetch general recommendations based on user query
-    result = sp.search(q=user_input, type='track', limit=1)
-    if result['tracks']['items']:
-        track = result['tracks']['items'][0]
-        track_name = track['name']
-        track_url = track['external_urls']['spotify']
-        return jsonify({'song': track_name, 'url': track_url})
+    try:
+        # If no mood match, search Spotify
+        result = sp.search(q=user_input, type='track', limit=1)
+        if result['tracks']['items']:
+            track = result['tracks']['items'][0]
+            track_name = track['name']
+            track_url = track['external_urls']['spotify']
+            return jsonify({'song': track_name, 'url': track_url})
 
-    return jsonify({"message": "Sorry, I couldn't find any recommendations."})
+        return jsonify({"message": "Sorry, I couldn't find any recommendations."})
+    
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({"message": "An error occurred while fetching the recommendation."})
+
+def get_mood_from_input(user_input):
+    if any(word in user_input for word in ["happy", "joy", "excited"]):
+        return "happy"
+    elif any(word in user_input for word in ["sad", "down", "blue"]):
+        return "sad"
+    elif any(word in user_input for word in ["relaxed", "calm", "chill"]):
+        return "relaxed"
+    elif any(word in user_input for word in ["energetic", "active", "hyped"]):
+        return "energetic"
+    return None
 
 if __name__ == '__main__':
     app.run(debug=True)
