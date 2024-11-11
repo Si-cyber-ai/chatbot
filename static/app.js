@@ -31,6 +31,17 @@ async function sendMessage() {
         handleConversationPhase(userInput); // Process input based on conversation phase
     }, 1500);
 }
+// Function to reset the chat
+function restartChat() {
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.innerHTML = ""; // Clear all chat messages
+    conversationPhase = 0; // Reset conversation phase
+    casualResponseCount = 0; // Reset casual response count
+    displayMessage("Welcome back! How can I assist you with music recommendations?", 'bot-message');
+}
+
+// Existing functions like sendMessage() remain unchanged
+
 
 // Function to display messages in the chat
 function displayMessage(content, className) {
