@@ -163,6 +163,7 @@ function resetConversation() {
     casualResponseCount = 0;
 }       
 
+
 // Reset conversation to the beginning
 function resetConversation() {
     conversationPhase = 0;
