@@ -15,6 +15,41 @@ body {
     text-align: center;
     padding: 20px;
 }
+.restart-btn {
+    background-color: #4CAF50; 
+    color: #fff;
+    padding: 8px 12px; 
+    border: none;
+    border-radius: 4px; 
+    cursor: pointer;
+    font-size: 18px; 
+    width: auto; 
+    height: auto; 
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px; /* Space above the button */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for a floating effect */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    font-family: 'Roboto', sans-serif;
+}
+
+.restart-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
+}
+
+.restart-btn:focus {
+    outline: none; /* Remove outline on focus */
+    box-shadow: 0 0 0 4px rgba(72, 163, 79, 0.5); /* Subtle focus ring with green tone */
+}
+
+.restart-btn:active {
+    background-color: #388e3c; /* Even darker green when pressed */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Small shadow effect on click */
+}
+
+
 
 h1 {
     color: #4CAF50;
@@ -169,4 +204,3 @@ input::placeholder {
         width: 100%; /* Full width button for mobile */
     }
 }
-
