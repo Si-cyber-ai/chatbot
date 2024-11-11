@@ -20,7 +20,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎶 Music Recommendation Chatbot 🎶</h1>
+        <h1>🎶 TUNE MATE 🎶</h1>
         
         <!-- Chatbox area -->
         <div id="chatbox" aria-label="Chatbox">
@@ -28,17 +28,26 @@
             
             <!-- Input field and button for user interaction -->
             <input 
-                type="text" 
-                id="userInput" 
-                placeholder="Enter a genre, artist, or mood..." 
-                class="input-field" 
-                aria-label="Type your query here"
+            type="text" 
+            id="userInput" 
+            placeholder="Enter a genre, artist, or mood..." 
+            class="input-field" 
+            aria-label="Type your query here"
             />
+
             <button 
                 onclick="sendMessage()" 
                 class="send-btn" 
                 aria-label="Send your request">
                 Get Recommendation
+            </button>
+            
+            <!-- Restart button for clearing the chat -->
+            <button 
+                onclick="restartChat()" 
+                class="restart-btn" 
+                aria-label="Restart conversation">
+                R
             </button>
         </div>
     </div>
@@ -47,5 +56,3 @@
     <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
-
-
