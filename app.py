@@ -4,7 +4,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import os
 import mysql.connector
-from dotenv import load_dotenv  # Importing load_dotenv to load environment variables from .env file
+from dotenv import load_dotenv  # Load environment variables from .env file
 
 app = Flask(__name__)
 
@@ -25,17 +25,6 @@ db_config = {
     'database': os.getenv("MYSQL_DATABASE")
 }
 
-# Sample recommendations based on moods
-mood_recommendations = {
-    "happy": [
-        {"song": "Happy by Pharrell Williams", "url": "https://open.spotify.com/track/3PVd8jZ2L6ZbGRU6p2qUHA"},
-        {"song": "Good Vibrations by The Beach Boys", "url": "https://open.spotify.com/track/0Ddr8qW4J9r9V0MQu43yLt"},
-        {"song": "Uptown Funk by Mark Ronson ft. Bruno Mars", "url": "https://open.spotify.com/track/0eP6b33mZp2sl5Z2Lg74O4"},
-        {"song": "Shake It Off by Taylor Swift", "url": "https://open.spotify.com/track/6pHnJgVqIp3Z6wVwYH9Y9n"}
-    ],
-    # Add other mood recommendations here
-}
-
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -45,14 +34,16 @@ def get_recommendation():
     user_input = request.json.get('query', '').lower()
     mood = get_mood_from_input(user_input)
 
+    # Use Spotify API for dynamic mood-based recommendations
     if mood:
-        recommendations = random.sample(mood_recommendations[mood], 3)  # Get 3 random recommendations
-        for recommendation in recommendations:
-            save_recommendation(user_input, mood, recommendation['song'], recommendation['url'])
-        return jsonify({'recommendations': recommendations})
+        recommendations = get_spotify_recommendations(mood, 3)  # Get 3 Spotify recommendations for the mood
+        if recommendations:
+            for recommendation in recommendations:
+                save_recommendation(user_input, mood, recommendation['song'], recommendation['url'])
+            return jsonify({'recommendations': recommendations})
 
+    # Fallback for specific user query search
     try:
-        # If no mood match, search Spotify
         result = sp.search(q=user_input, type='track', limit=1)
         if result['tracks']['items']:
             track = result['tracks']['items'][0]
@@ -68,6 +59,7 @@ def get_recommendation():
         return jsonify({"message": "An error occurred while fetching the recommendation."})
 
 def get_mood_from_input(user_input):
+    """Determine mood based on keywords in the user's input."""
     if any(word in user_input for word in ["happy", "joy", "excited"]):
         return "happy"
     elif any(word in user_input for word in ["sad", "down", "blue"]):
@@ -78,8 +70,33 @@ def get_mood_from_input(user_input):
         return "energetic"
     return None
 
+def get_spotify_recommendations(mood, count):
+    """Fetch a specified number of mood-based recommendations from Spotify."""
+    mood_queries = {
+        "happy": "happy upbeat",
+        "sad": "sad mellow",
+        "relaxed": "relaxing calm",
+        "energetic": "energetic workout"
+    }
+    
+    recommendations = []
+    query = mood_queries.get(mood, "chill")  # Fallback to 'chill' if mood not mapped
+    
+    # Spotify search for the mood-based songs
+    try:
+        results = sp.search(q=query, type='track', limit=count)
+        for item in results['tracks']['items']:
+            recommendations.append({
+                'song': item['name'],
+                'url': item['external_urls']['spotify']
+            })
+    except Exception as e:
+        print(f"Error while fetching recommendations: {e}")
+    
+    return recommendations if recommendations else None
+
 def save_recommendation(user_input, mood, song, url):
-    """Save recommendation to MySQL database."""
+    """Save the user's recommendation to the MySQL database."""
     try:
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
@@ -98,3 +115,4 @@ def save_recommendation(user_input, mood, song, url):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
